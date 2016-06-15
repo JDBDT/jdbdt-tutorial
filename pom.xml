@@ -1,0 +1,98 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+ 	<modelVersion>4.0.0</modelVersion>
+	<name>JDBDT</name>
+	<description>Sample project illustrating use of JDBDT.</description>
+	<inceptionYear>2016</inceptionYear>
+	<url>http://jdbdt.org/</url>
+	<groupId>org.jdbdt</groupId>
+	<artifactId>jdbdt-tutorial</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<organization>
+		<name>JDBDT</name>
+		<url>http://jdbdt.org</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>Eclipse Public License 1.0</name>
+			<url>http://www.eclipse.org/legal/epl-v10.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<url>https://github.com/edrdo/jdbdt-tutorial</url>
+		<connection>scm:git:git@github.com:edrdo/jdbdt-tutorial.git</connection>
+		<developerConnection>scm:git:git@github.com:edrdo/jdbdt-tutorial.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+	<issueManagement>
+		<system>github</system>
+		<url>https://github.com/edrdo/jdbdt-tutorial/issues/</url>
+	</issueManagement>
+	<ciManagement>
+		<system>Travis</system>
+		<url>https://travis-ci.org/edrdo/jdbdt-tutorial/</url>
+	</ciManagement>
+	<developers>
+		<developer>
+			<id>edrdo</id>
+			<name>Eduardo R. B. Marques</name>
+			<email>edrdo@dcc.fc.up.pt</email>
+		</developer>
+	</developers>
+	<properties>
+		<required.maven>3.2</required.maven>
+		<required.java>1.8</required.java>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+		  	<groupId>org.jdbdt</groupId>
+			<artifactId>jdbdt</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<fail>true</fail>
+							<failFast>true</failFast>
+							<rules>
+								<requireMavenVersion>
+									<message>Maven version ${required.maven} or higher is
+										required!
+										Maven version ${maven.version} detected ...
+									</message>
+									<version>${required.maven}</version>
+								</requireMavenVersion>
+								<requireJavaVersion>
+									<message>Java version ${required.java} or higher is required!
+										Version ${java.version} detected ...
+									</message>
+									<version>${required.java}</version>
+								</requireJavaVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		</build>
+</project>
