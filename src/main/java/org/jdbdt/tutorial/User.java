@@ -2,21 +2,34 @@ package org.jdbdt.tutorial;
 
 import java.sql.Date;
 
+/**
+ * POJO for user data.
+ */
 @SuppressWarnings("javadoc")
 public final class User implements Cloneable {
 
+  private int id;
   private String login;
   private String name;
   private String password;
   private Date created;
   
-  public User(String login, String name, String password, Date created) {
+  public User(int id, String login, String name, String password, Date created) {
+    setId(id);
     setLogin(login);
     setName(name);
     setPassword(password);
     setCreated(created);
   }
 
+  public int getId() {
+    return id;
+  }
+  
+  public void setId(int id) {
+    this.id = id;
+  }
+  
   public String getLogin() {
     return login;
   }
@@ -49,19 +62,23 @@ public final class User implements Cloneable {
     this.created = date;
   }
   
-  @Override
+  public boolean equals(User u) {
+    return id == u.id
+        && login.equals(u.login)
+        && name.equals(u.name)
+        && password.equals(u.password)
+        && created.equals(u.created);
+  }
+  
+  @Override 
   public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (! (o instanceof User)) {
-      return false;
-    }
-    User other = (User) o;
-    return login.equals(other.login)
-        && name.equals(other.name)
-        && password.equals(other.password)
-        && created.equals(other.created);
+    return o == this || (o instanceof User && equals((User) o));
+  }
+  
+  @Override 
+  public String toString() {
+    return String.format("id=%d login=%s name=%s password=%s created=%s",
+                         id, login, name, password, created);
   }
   
   @Override
@@ -73,5 +90,6 @@ public final class User implements Cloneable {
       throw new Error(e);
     }
   }
+
 
 }

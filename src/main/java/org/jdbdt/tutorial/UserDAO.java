@@ -5,118 +5,221 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@SuppressWarnings("javadoc")
-public class UserDAO {
-  public static final String TABLE_NAME = "Users";
+/**
+ * DAO for user table.
+ * 
+ */
+public final class UserDAO {
 
-  public static final String[] COLUMNS = { 
-    "login", "name", "password", "created" 
-  };
-
+  /** Database connection. */
   private final Connection connection;
 
-  public UserDAO(Connection c) throws SQLException {
+  /** 
+   * Constructor.
+   * @param c Database connection.
+   */
+  public UserDAO(Connection c) {
     connection = c;
-    try {
-      stmt(Op.DROP).execute();
+  }
+    
+  /**
+   * Create table.
+   * @throws SQLException if a database error occurs.
+   */
+  public void createTable() throws SQLException {
+    try(PreparedStatement stmt = stmt(DBOp.CREATE_TABLE)) {
+      stmt.execute();
     } 
-    catch(SQLException e) { }
-    stmt(Op.CREATE).execute();
   }
 
-  private PreparedStatement stmt(Op op) throws SQLException {
-    return connection.prepareStatement(op.getSQL());
-  }
+  /** SQL for table insertion. */
+  private static final String SQL_FOR_INSERT = 
+      "INSERT INTO USERS(ID,LOGIN,NAME,PASSWORD,CREATED) VALUES (?,?,?,?,?)";
 
-  @SafeVarargs
-  public final void doInsert(User... users) throws SQLException {
-    try(PreparedStatement s = stmt(Op.INSERT)) {
-      for (User u : users) {
-        s.setString(1, u.getLogin());
-        s.setString(2, u.getName());
-        s.setString(3, u.getPassword());
-        s.setDate(4, u.getCreated());
-        s.execute();
-      }
+  /**
+   * Insert an user.
+   * @param u User data for insertion.
+   * @throws SQLException if a database error occurs.
+   */
+  public final void insertUser(User u) throws SQLException {
+    try(PreparedStatement s = connection.prepareStatement(SQL_FOR_INSERT)) {
+      s.setInt(1, u.getId());
+      s.setString(2, u.getLogin());
+      s.setString(3, u.getName());
+      s.setString(4, u.getPassword());
+      s.setDate(5, u.getCreated());
+      s.execute();
     }
   }
 
-  public int doDeleteAll() throws SQLException {
-    try (PreparedStatement stmt = stmt(Op.DELETE_ALL)) {
+  /** SQL for complete user removal. */
+  private static final String SQL_FOR_DELETE_ALL = "DELETE FROM USERS";
+  
+  /**
+   * Delete all users.
+   * @return The number of deleted users. 
+   * @throws SQLException If a database error occurs.
+   */
+  public int deleteAll() throws SQLException {
+    try (PreparedStatement stmt = connection.prepareStatement(SQL_FOR_DELETE_ALL)) {
       return stmt.executeUpdate();
     }   
   }
 
-  @SafeVarargs
-  public final int doDelete(String... ids) throws SQLException {
-    int n = 0;
-    try(PreparedStatement s = stmt(Op.DELETE)) {
-      for (String id : ids) {
-        s.setString(1, id);
-        n += s.executeUpdate();
-      }
-      return n;
+  /** SQL for single user removal. */
+  private static final String SQL_FOR_DELETE = "DELETE FROM USERS WHERE ID=?";
+  
+  /**
+   * Delete an user.
+   * @param u User data.
+   * @return <code>true</code> if user was deleted (<code>false</code>
+   *    if the user could not be found)
+   * @throws SQLException If a database error occurs.
+   */
+  public final boolean deleteUser(User u) throws SQLException {
+    try(PreparedStatement s = connection.prepareStatement(SQL_FOR_DELETE)) {
+      s.setInt(1, u.getId());
+      return s.executeUpdate() == 1;
     }
   }
 
-  @SafeVarargs
-  public final int doUpdate(User... users) throws SQLException {
-    int n = 0;
-    try (PreparedStatement s = stmt(Op.UPDATE)) {
-      for (User u : users) {
-        s.setString(1, u.getName());
-        s.setString(2, u.getPassword());
-        s.setDate(3, u.getCreated());
-        s.setString(4, u.getLogin());
-        n += s.executeUpdate();
-      }
+  /** 
+   * SQL used for table update.
+   */
+  private static final String SQL_FOR_UPDATE = 
+      "UPDATE USERS SET LOGIN=?,NAME=?,PASSWORD=?,CREATED=? WHERE ID=?";
+  
+  /**
+   * Update user.
+   * @param u User data for update.
+   * @return <code>true</code> if update was successfull, <code>false</code> otherwise
+   *    (user does not exist)
+   * @throws SQLException if a database error occurs.
+   */
+  public final boolean updateUser(User u) throws SQLException {
+    try (PreparedStatement s = connection.prepareStatement(SQL_FOR_UPDATE)) {
+        s.setString(1, u.getLogin());
+        s.setString(2, u.getName());
+        s.setString(3, u.getPassword());
+        s.setDate(4, u.getCreated());
+        s.setInt(5, u.getId());
+        return s.executeUpdate() == 1;
     }
-    return n;
   }
 
-  public User query(String id) throws SQLException {
-    try(PreparedStatement s = stmt(Op.SELECT)) {
-      s.setString(1, id);
+  /**
+   * Get user by id.
+   * @param id User id.
+   * @return User object or <code>null</code>
+   *         if the user does not exist.
+   * @throws SQLException if a database error occurs.
+   */
+  public User getUser(int id) throws SQLException {
+    try(PreparedStatement s = stmt(DBOp.SELECT_BY_ID)) {
+      s.setInt(1, id);
       try (ResultSet rs = s.executeQuery()) {
         return rs.next() ? 
-            new User(id, 
+            new User(id,
                 rs.getString(1), 
-                rs.getString(2),
-                rs.getDate(3)) 
+                rs.getString(2), 
+                rs.getString(3),
+                rs.getDate(4)) 
+        : null;
+      } 
+    }
+  }
+  
+  /**
+   * Get user by login.
+   * @param login User login.
+   * @return User object or <code>null</code>
+   *         if the user does not exist.
+   * @throws SQLException if a database error occurs.
+   */
+  public User getUser(String login) throws SQLException {
+    try(PreparedStatement s = stmt(DBOp.SELECT_BY_LOGIN)) {
+      s.setString(1, login);
+      try (ResultSet rs = s.executeQuery()) {
+        return rs.next() ? 
+            new User(rs.getInt(1),
+                login,
+                rs.getString(2), 
+                rs.getString(3),
+                rs.getDate(4)) 
         : null;
       } 
     }
   }
 
+  /**
+   * Get user count.
+   * @return The number of users in the database.
+   * @throws SQLException If a data
+   */
   public int count() throws SQLException {
-    try(ResultSet rs = stmt(Op.COUNT).executeQuery()) {
+    try(PreparedStatement s= stmt(DBOp.COUNT);
+        ResultSet rs = s.executeQuery()) {
       rs.next();
       return rs.getInt(1);
     } 
   }
-
-
-  private enum Op { 
-    DROP("DROP TABLE %s"),
-    CREATE("CREATE TABLE %s ("
-        + "LOGIN VARCHAR(10) PRIMARY KEY NOT NULL,"
-        + "NAME VARCHAR(40) NOT NULL, " + "PASSWORD VARCHAR(32) NOT NULL,"
+  
+  /**
+   * Prepare statement for database operation.
+   * @param op Operation.
+   * @return A prepared statement.
+   * @throws SQLException if a database error occurs.
+   */
+  private PreparedStatement stmt(DBOp op) throws SQLException {
+    return connection.prepareStatement(op.getSQL());
+  }
+  
+  /**
+   * Enumeration for database operations along with
+   * associated SQL code.
+   */
+  private enum DBOp { 
+    /** Create table. */
+    CREATE_TABLE("CREATE TABLE IF NOT EXISTS USERS ("
+        + "ID INTEGER PRIMARY KEY NOT NULL,"
+        + "LOGIN VARCHAR(10) UNIQUE NOT NULL,"
+        + "NAME VARCHAR(40) NOT NULL, " 
+        + "PASSWORD VARCHAR(32) NOT NULL,"
         + "CREATED DATE)"),
-    DELETE_ALL("DELETE FROM %s"),
-    DELETE("DELETE FROM %s WHERE login = ?"),
-    INSERT("INSERT INTO %s(login, name, password, created) VALUES (?,?,?,?)"),
-    SELECT("SELECT name, password, created FROM %s WHERE LOGIN = ? "),
-    UPDATE("UPDATE %s set name=?,password=?,created=? WHERE login=?"),
-    COUNT("SELECT COUNT(*) FROM %s");
+    /** Delete all users. */
+    DELETE_ALL("DELETE FROM USERS"),
+    /** Delete user. */
+    DELETE("DELETE FROM USERS WHERE ID = ?"),
+    /** Insert user. */
+    INSERT("INSERT INTO USERS(ID,LOGIN,NAME,PASSWORD,CREATED) VALUES (?,?,?,?,?)"),
+    /** Select user by id. */
+    SELECT_BY_ID("SELECT LOGIN, NAME, PASSWORD, CREATED FROM USERS WHERE ID = ? "),
+    /** Select user by login. */
+    SELECT_BY_LOGIN("SELECT ID, NAME, PASSWORD, CREATED FROM USERS WHERE LOGIN = ? "),
+    /** Update user. */
+    UPDATE("UPDATE USERS SET LOGIN=?,NAME=?,PASSWORD=?,CREATED=? WHERE ID=?"),
+    /** Get user count. */
+    COUNT("SELECT COUNT(*) FROM USERS");
 
-    private String sql; 
+    /** SQL for operation. */
+    private final String sql; 
 
-    Op(String sqlFmt) {
-      this.sql = String.format(sqlFmt, TABLE_NAME);
+    
+    /** Constructor. 
+     * @param sql SQL code.
+     */
+    DBOp(String sql) {
+      this.sql = sql;
     }
     
+    /** 
+     * Get SQL. 
+     * @return SQL code for operation.
+     */
     String getSQL() {
       return sql;
     }
   }
+
+  
 }
