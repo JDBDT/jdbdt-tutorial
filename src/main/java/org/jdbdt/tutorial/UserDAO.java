@@ -22,12 +22,21 @@ public final class UserDAO {
     connection = c;
   }
     
+  /** SQL for table creation. */
+  private static final String 
+  SQL_FOR_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS USERS ("
+      + "ID INTEGER PRIMARY KEY NOT NULL,"
+      + "LOGIN VARCHAR(10) UNIQUE NOT NULL,"
+      + "NAME VARCHAR(40) NOT NULL, " 
+      + "PASSWORD VARCHAR(32) NOT NULL,"
+      + "CREATED DATE)";
+  
   /**
    * Create table.
    * @throws SQLException if a database error occurs.
    */
   public void createTable() throws SQLException {
-    try(PreparedStatement stmt = stmt(DBOp.CREATE_TABLE)) {
+    try(PreparedStatement stmt = connection.prepareStatement(SQL_FOR_CREATE_TABLE)) {
       stmt.execute();
     } 
   }
@@ -106,7 +115,11 @@ public final class UserDAO {
         return s.executeUpdate() == 1;
     }
   }
-
+  
+  /** SQL for user queries by id. */
+  private static final String 
+  SQL_FOR_SELECT_BY_ID = "SELECT LOGIN, NAME, PASSWORD, CREATED FROM USERS WHERE ID = ? ";
+  
   /**
    * Get user by id.
    * @param id User id.
@@ -115,7 +128,7 @@ public final class UserDAO {
    * @throws SQLException if a database error occurs.
    */
   public User getUser(int id) throws SQLException {
-    try(PreparedStatement s = stmt(DBOp.SELECT_BY_ID)) {
+    try(PreparedStatement s = connection.prepareStatement(SQL_FOR_SELECT_BY_ID)) {
       s.setInt(1, id);
       try (ResultSet rs = s.executeQuery()) {
         return rs.next() ? 
@@ -129,6 +142,10 @@ public final class UserDAO {
     }
   }
   
+  /** SQL for user queries by login. */
+  private static final String 
+  SQL_FOR_SELECT_BY_LOGIN = "SELECT ID, NAME, PASSWORD, CREATED FROM USERS WHERE LOGIN = ? ";
+
   /**
    * Get user by login.
    * @param login User login.
@@ -137,7 +154,7 @@ public final class UserDAO {
    * @throws SQLException if a database error occurs.
    */
   public User getUser(String login) throws SQLException {
-    try(PreparedStatement s = stmt(DBOp.SELECT_BY_LOGIN)) {
+    try(PreparedStatement s = connection.prepareStatement(SQL_FOR_SELECT_BY_LOGIN)) {
       s.setString(1, login);
       try (ResultSet rs = s.executeQuery()) {
         return rs.next() ? 
@@ -149,77 +166,5 @@ public final class UserDAO {
         : null;
       } 
     }
-  }
-
-  /**
-   * Get user count.
-   * @return The number of users in the database.
-   * @throws SQLException If a data
-   */
-  public int count() throws SQLException {
-    try(PreparedStatement s= stmt(DBOp.COUNT);
-        ResultSet rs = s.executeQuery()) {
-      rs.next();
-      return rs.getInt(1);
-    } 
-  }
-  
-  /**
-   * Prepare statement for database operation.
-   * @param op Operation.
-   * @return A prepared statement.
-   * @throws SQLException if a database error occurs.
-   */
-  private PreparedStatement stmt(DBOp op) throws SQLException {
-    return connection.prepareStatement(op.getSQL());
-  }
-  
-  /**
-   * Enumeration for database operations along with
-   * associated SQL code.
-   */
-  private enum DBOp { 
-    /** Create table. */
-    CREATE_TABLE("CREATE TABLE IF NOT EXISTS USERS ("
-        + "ID INTEGER PRIMARY KEY NOT NULL,"
-        + "LOGIN VARCHAR(10) UNIQUE NOT NULL,"
-        + "NAME VARCHAR(40) NOT NULL, " 
-        + "PASSWORD VARCHAR(32) NOT NULL,"
-        + "CREATED DATE)"),
-    /** Delete all users. */
-    DELETE_ALL("DELETE FROM USERS"),
-    /** Delete user. */
-    DELETE("DELETE FROM USERS WHERE ID = ?"),
-    /** Insert user. */
-    INSERT("INSERT INTO USERS(ID,LOGIN,NAME,PASSWORD,CREATED) VALUES (?,?,?,?,?)"),
-    /** Select user by id. */
-    SELECT_BY_ID("SELECT LOGIN, NAME, PASSWORD, CREATED FROM USERS WHERE ID = ? "),
-    /** Select user by login. */
-    SELECT_BY_LOGIN("SELECT ID, NAME, PASSWORD, CREATED FROM USERS WHERE LOGIN = ? "),
-    /** Update user. */
-    UPDATE("UPDATE USERS SET LOGIN=?,NAME=?,PASSWORD=?,CREATED=? WHERE ID=?"),
-    /** Get user count. */
-    COUNT("SELECT COUNT(*) FROM USERS");
-
-    /** SQL for operation. */
-    private final String sql; 
-
-    
-    /** Constructor. 
-     * @param sql SQL code.
-     */
-    DBOp(String sql) {
-      this.sql = sql;
-    }
-    
-    /** 
-     * Get SQL. 
-     * @return SQL code for operation.
-     */
-    String getSQL() {
-      return sql;
-    }
-  }
-
-  
+  } 
 }
