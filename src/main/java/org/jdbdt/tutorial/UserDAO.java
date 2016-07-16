@@ -51,13 +51,13 @@ public final class UserDAO {
    * @throws SQLException if a database error occurs.
    */
   public final void insertUser(User u) throws SQLException {
-    try(PreparedStatement s = connection.prepareStatement(SQL_FOR_INSERT)) {
-      s.setInt(1, u.getId());
-      s.setString(2, u.getLogin());
-      s.setString(3, u.getName());
-      s.setString(4, u.getPassword());
-      s.setDate(5, u.getCreated());
-      s.execute();
+    try(PreparedStatement stmt = connection.prepareStatement(SQL_FOR_INSERT)) {
+      stmt.setInt(1, u.getId());
+      stmt.setString(2, u.getLogin());
+      stmt.setString(3, u.getName());
+      stmt.setString(4, u.getPassword());
+      stmt.setDate(5, u.getCreated());
+      stmt.execute();
     }
   }
 
@@ -86,9 +86,9 @@ public final class UserDAO {
    * @throws SQLException If a database error occurs.
    */
   public final boolean deleteUser(User u) throws SQLException {
-    try(PreparedStatement s = connection.prepareStatement(SQL_FOR_DELETE)) {
-      s.setInt(1, u.getId());
-      return s.executeUpdate() == 1;
+    try(PreparedStatement stmt = connection.prepareStatement(SQL_FOR_DELETE)) {
+      stmt.setInt(1, u.getId());
+      return stmt.executeUpdate() == 1;
     }
   }
 
@@ -106,13 +106,13 @@ public final class UserDAO {
    * @throws SQLException if a database error occurs.
    */
   public final boolean updateUser(User u) throws SQLException {
-    try (PreparedStatement s = connection.prepareStatement(SQL_FOR_UPDATE)) {
-        s.setString(1, u.getLogin());
-        s.setString(2, u.getName());
-        s.setString(3, u.getPassword());
-        s.setDate(4, u.getCreated());
-        s.setInt(5, u.getId());
-        return s.executeUpdate() == 1;
+    try (PreparedStatement stmt = connection.prepareStatement(SQL_FOR_UPDATE)) {
+        stmt.setString(1, u.getLogin());
+        stmt.setString(2, u.getName());
+        stmt.setString(3, u.getPassword());
+        stmt.setDate(4, u.getCreated());
+        stmt.setInt(5, u.getId());
+        return stmt.executeUpdate() == 1;
     }
   }
   
@@ -128,9 +128,9 @@ public final class UserDAO {
    * @throws SQLException if a database error occurs.
    */
   public User getUser(int id) throws SQLException {
-    try(PreparedStatement s = connection.prepareStatement(SQL_FOR_SELECT_BY_ID)) {
-      s.setInt(1, id);
-      try (ResultSet rs = s.executeQuery()) {
+    try(PreparedStatement stmt = connection.prepareStatement(SQL_FOR_SELECT_BY_ID)) {
+      stmt.setInt(1, id);
+      try (ResultSet rs = stmt.executeQuery()) {
         return rs.next() ? 
             new User(id,
                 rs.getString(1), 
@@ -154,9 +154,9 @@ public final class UserDAO {
    * @throws SQLException if a database error occurs.
    */
   public User getUser(String login) throws SQLException {
-    try(PreparedStatement s = connection.prepareStatement(SQL_FOR_SELECT_BY_LOGIN)) {
-      s.setString(1, login);
-      try (ResultSet rs = s.executeQuery()) {
+    try(PreparedStatement stmt = connection.prepareStatement(SQL_FOR_SELECT_BY_LOGIN)) {
+      stmt.setString(1, login);
+      try (ResultSet rs = stmt.executeQuery()) {
         return rs.next() ? 
             new User(rs.getInt(1),
                 login,
