@@ -1,27 +1,24 @@
 package org.jdbdt.tutorial;
 
-// Static import for JDBDT facade methods
-import static org.jdbdt.JDBDT.*;
-
-// Static import for JUnit assertion methods
-import static org.junit.Assert.*;
-
-// java.sql imports
+// Java/JDBC API imports
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.List;
 
-// JDBDT definitions 
-import org.jdbdt.Conversion;
-import org.jdbdt.DB;
-import org.jdbdt.DataSet;
-import org.jdbdt.Table;
-
-// JUnit imports
+//JUnit imports
+import static org.junit.Assert.*;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+// JDBDT import
+import static org.jdbdt.JDBDT.*; 
+import org.jdbdt.Conversion;
+import org.jdbdt.DB;
+import org.jdbdt.DataSet;
+import org.jdbdt.Table;
 
 @SuppressWarnings("javadoc")
 public class UserDAOTest {
@@ -47,7 +44,7 @@ public class UserDAOTest {
   static final Date FIXED_DATE = Date.valueOf("2016-01-01");
   
   // Data set that we use for populating the table.
-  // (we need this as a field so it can be referred to in testDeleteAll)
+  // (we need this as a field so it can be referred to in a few test methods)
   static DataSet theInitialData;
   
   @BeforeClass
@@ -82,7 +79,6 @@ public class UserDAOTest {
         .data();
     
     populate(theInitialData);
-    commit(theDB);
   }
   
   @AfterClass 
@@ -139,7 +135,7 @@ public class UserDAOTest {
       fail("Expected " + SQLException.class);
     }
     catch (SQLException e) {
-      assertUnchanged("No DB change", theTable);
+      assertUnchanged("No DB changes", theTable);
     }
   }
   
@@ -157,12 +153,12 @@ public class UserDAOTest {
     User u = nonExistingUser();
     boolean deleted = theDAO.deleteUser(u);
     assertFalse("return value", deleted);
-    assertUnchanged("No DB change", theTable);
+    assertUnchanged("No DB changes", theTable);
   }
   
   @Test 
   public void testDeleteAll() throws SQLException {
-    theDAO.deleteAll();
+    theDAO.deleteAllUsers();
     assertDeleted("DB cleaned up", theInitialData);
   }
   
@@ -181,23 +177,34 @@ public class UserDAOTest {
     User u = nonExistingUser();
     boolean updated = theDAO.updateUser(u);
     assertFalse("return value", updated);
-    assertUnchanged("No changes", theTable);
+    assertUnchanged("No DB changes", theTable);
   }
   
   @Test
-  public void testUserQueryById() throws SQLException {
+  public void testGetAllUsers() throws SQLException {
+    List<User> list = theDAO.getAllUsers();
+    DataSet expected = theInitialData;
+    DataSet actual = data(theTable, CONVERSION).rows(list);
+    assertEquals("User list", expected, actual);
+    assertUnchanged("No DB changes", theTable); 
+  }
+  
+  @Test
+  public void testGetUserById() throws SQLException {
     User expected = existingUser();
     User actual = theDAO.getUser(expected.getId());
-    assertEquals("Root user", expected, actual);
-    assertUnchanged("No changes", theTable); 
+    assertEquals("User", expected, actual);
+    assertUnchanged("No DB changes", theTable); 
   }
   
   @Test
-  public void testUserQueryByLogin() throws SQLException {
+  public void testGetUserByLogin() throws SQLException {
     User expected = existingUser();
     User actual = theDAO.getUser(expected.getLogin());
     assertEquals("User", expected, actual);
-    assertUnchanged("No changes", theTable); 
+    assertUnchanged("No DB changes", theTable); 
   }
+  
+
   
 }

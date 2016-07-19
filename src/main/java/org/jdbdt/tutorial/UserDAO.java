@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DAO for user table.
@@ -73,7 +75,7 @@ public final class UserDAO {
    * @return The number of deleted users. 
    * @throws SQLException If a database error occurs.
    */
-  public int deleteAll() throws SQLException {
+  public int deleteAllUsers() throws SQLException {
     try (PreparedStatement stmt = connection.prepareStatement(SQL_FOR_DELETE_ALL)) {
       return stmt.executeUpdate();
     }   
@@ -171,4 +173,29 @@ public final class UserDAO {
       } 
     }
   } 
+  
+  /** SQL for user queries by id. */
+  private static final String 
+  SQL_FOR_SELECT_ALL = "SELECT ID, LOGIN, NAME, PASSWORD, CREATED FROM USERS";
+  
+  /**
+   * Get all users.
+   * @return List of user objects (empty if no user exists).
+   * @throws SQLException if a database error occurs.
+   */
+  public List<User> getAllUsers() throws SQLException {
+    ArrayList<User> list = new ArrayList<>();
+    try(PreparedStatement stmt = connection.prepareStatement(SQL_FOR_SELECT_ALL)) {
+      try (ResultSet rs = stmt.executeQuery()) {
+        while (rs.next()) {
+          list.add(new User(rs.getInt(1),
+                            rs.getString(2), 
+                            rs.getString(3), 
+                            rs.getString(4),
+                            rs.getDate(5)));
+        }
+        return list;
+      }
+    }
+  }
 }
