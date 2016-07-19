@@ -1,5 +1,7 @@
 package org.jdbdt.tutorial;
 
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,23 +24,25 @@ public final class UserDAO {
     connection = c;
   }
     
-  /** SQL for table creation. */
-  private static final String 
-  SQL_FOR_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS USERS ("
-      + "ID INTEGER PRIMARY KEY NOT NULL,"
-      + "LOGIN VARCHAR(10) UNIQUE NOT NULL,"
-      + "NAME VARCHAR(40) NOT NULL, " 
-      + "PASSWORD VARCHAR(32) NOT NULL,"
-      + "CREATED DATE)";
-  
+  /** SQL script for table creation. */
+  private static final String SQL_TABLE_SCRIPT = "/tableCreation.sql";
+
   /**
    * Create table.
    * @throws SQLException if a database error occurs.
    */
   public void createTable() throws SQLException {
-    try(PreparedStatement stmt = connection.prepareStatement(SQL_FOR_CREATE_TABLE)) {
-      stmt.execute();
+    DataInputStream in = new DataInputStream(getClass().getResourceAsStream(SQL_TABLE_SCRIPT));
+    try {
+      byte[] fileContents = new byte[in.available()];
+      in.readFully(fileContents);
+      try(PreparedStatement stmt = connection.prepareStatement(new String(fileContents))) {
+        stmt.execute();
+      } 
     } 
+    catch (IOException e) {
+      throw new Error("Error reading SQL for table creation", e);
+    }
   }
 
   /** SQL for table insertion. */
