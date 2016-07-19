@@ -140,7 +140,7 @@ public class UserDAOTest {
   }
   
   @Test
-  public void testExistingUserRemoval() throws SQLException {
+  public void testExistingUserDelete() throws SQLException {
     User u = existingUser();
     boolean deleted = theDAO.deleteUser(u);
     assertTrue("return value", deleted);
@@ -149,7 +149,7 @@ public class UserDAOTest {
   
   
   @Test
-  public void testNonExistingUserRemoval() throws SQLException {
+  public void testNonExistingUserDelete() throws SQLException {
     User u = nonExistingUser();
     boolean deleted = theDAO.deleteUser(u);
     assertFalse("return value", deleted);
@@ -158,8 +158,9 @@ public class UserDAOTest {
   
   @Test 
   public void testDeleteAll() throws SQLException {
-    theDAO.deleteAllUsers();
-    assertDeleted("DB cleaned up", theInitialData);
+    int n = theDAO.deleteAllUsers();
+    assertEquals("deleted users", n, theInitialData.size());
+    assertEmpty("DB cleaned up", theTable);
   }
   
   @Test
