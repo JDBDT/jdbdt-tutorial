@@ -12,14 +12,17 @@ public final class User implements Cloneable {
   private String login;
   private String name;
   private String password;
+  private Role role;
   private Date created;
+
   
-  public User(int id, String login, String name, String password, Date created) {
+  public User(int id, String login, String name, String password, Role role, Date created) {
     setId(id);
     setLogin(login);
     setName(name);
     setPassword(password);
     setCreated(created);
+    setRole(role);
   }
 
   public int getId() {
@@ -52,6 +55,14 @@ public final class User implements Cloneable {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+  
+  public void setRole(Role r) {
+    role = r;
+  }
+  
+  public Role getRole() {
+    return role;
   }
   
   public Date getCreated() {

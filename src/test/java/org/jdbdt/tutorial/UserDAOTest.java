@@ -20,6 +20,9 @@ import org.jdbdt.DB;
 import org.jdbdt.DataSet;
 import org.jdbdt.Table;
 
+// Static import for user roles
+import static org.jdbdt.tutorial.Role.*;
+
 @SuppressWarnings("javadoc")
 public class UserDAOTest {
   
@@ -59,7 +62,8 @@ public class UserDAOTest {
               .columns("ID",
                        "LOGIN", 
                        "NAME", 
-                       "PASSWORD", 
+                       "PASSWORD",
+                       "ROLE",
                        "CREATED" );
     // Initial data
     theInitialData
@@ -69,12 +73,15 @@ public class UserDAOTest {
         .value("LOGIN", "root")
         .value("NAME", "Root user")
         .value("CREATED", FIXED_DATE)
+        .value("ROLE", ADMIN.toString())
         .generate(1)
         .sequence("LOGIN", "alice", "bob", "charles")
         .sequence("NAME",  "Alice", "Bob", "Charles")
+        .value("ROLE", REGULAR.toString())
         .generate(3)
         .sequence("LOGIN", i -> "guest" + i)
         .sequence("NAME",  i -> "Guest User " + i)
+        .value("ROLE", GUEST.toString())
         .generate(2)
         .data();
     
@@ -93,6 +100,7 @@ public class UserDAOTest {
         u.getLogin(), 
         u.getName(), 
         u.getPassword(),
+        u.getRole().toString(),
         u.getCreated()
       };
       
@@ -113,11 +121,11 @@ public class UserDAOTest {
   }
   
   static User existingUser() {
-    return new User(0, "root", "Root user", "pass0", FIXED_DATE);
+    return new User(0, "root", "Root user", "pass0", Role.ADMIN, FIXED_DATE);
   }
   
   static User nonExistingUser() {
-    return new User(99, "john99", "John Doe 99", "doeit 99", FIXED_DATE);
+    return new User(99, "john99", "John Doe 99", "doeit 99", Role.REGULAR, FIXED_DATE);
   }
   
   @Test
