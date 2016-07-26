@@ -3,9 +3,11 @@ package org.jdbdt.tutorial;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,17 @@ public final class UserDAO {
   private final Connection connection;
 
   /** 
+   * Auxiliary method to execute plain SQL (without arguments). 
+   * @param sqlCode SQL code.
+   * @throws SQLException If a database error occurs.
+   */
+  private void executePlainSQL(String sqlCode) throws SQLException {
+    try (Statement stmt = connection.createStatement()) {
+      stmt.execute(sqlCode);
+    }
+  }
+  
+  /** 
    * Constructor.
    * @param c Database connection.
    */
@@ -26,24 +39,45 @@ public final class UserDAO {
     connection = c;
   }
     
+ 
+  /** SQL for dropping table */
+  private static final String SQL_FOR_TABLE_DROP = 
+      "DROP TABLE USERS";
+  
+  /**
+   * Drop table.
+   * @return <code>true</code> iff table existed and was dropped.
+   * @throws SQLException If a database error occurs,
+   */
+  public  boolean dropTable() throws SQLException {
+    DatabaseMetaData dbmd = connection.getMetaData();
+    ResultSet res = dbmd.getTables(null, null, "USERS", new String[] {"TABLE"});
+    boolean exists = res.next();
+    if (exists) {
+      executePlainSQL(SQL_FOR_TABLE_DROP);
+    }
+    return false;
+  }
+  
   /** SQL script for table creation. */
   private static final String SQL_TABLE_SCRIPT = "/tableCreation.sql";
-
+  
   /**
    * Create table.
+   * It will drop the table if it exists before.
    * @throws SQLException if a database error occurs.
+   * @see #dropTable()
    */
   public void createTable() throws SQLException {
+    dropTable();
     DataInputStream in = new DataInputStream(getClass().getResourceAsStream(SQL_TABLE_SCRIPT));
     try {
       byte[] fileContents = new byte[in.available()];
       in.readFully(fileContents);
-      try(PreparedStatement stmt = connection.prepareStatement(new String(fileContents))) {
-        stmt.execute();
-      } 
+      executePlainSQL(new String(fileContents));
     } 
     catch (IOException e) {
-      throw new Error("Error reading SQL for table creation", e);
+      throw new RuntimeException("Error reading SQL for table creation", e);
     }
   }
 
@@ -205,7 +239,6 @@ public final class UserDAO {
   }
   
   /** SQL to query users by role. */
-  /** SQL to query all users. */
   private static final String 
   SQL_FOR_SELECT_BY_ROLE = "SELECT ID, LOGIN, NAME, PASSWORD, ROLE, CREATED FROM USERS WHERE ROLE=?";
   
