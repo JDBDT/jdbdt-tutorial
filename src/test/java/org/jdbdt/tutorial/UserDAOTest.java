@@ -199,6 +199,15 @@ public class UserDAOTest {
   }
   
   @Test
+  public void testGetUsersByRole() throws SQLException {
+    List<User> list = theDAO.getUsers(Role.GUEST);
+    DataSet expected = DataSet.tail(theInitialData, 2);
+    DataSet actual = data(theTable, CONVERSION).rows(list);
+    assertEquals("Guest user list", expected, actual);
+    assertUnchanged("No DB changes", theTable); 
+  }
+  
+  @Test
   public void testGetUserById() throws SQLException {
     User expected = existingUser();
     User actual = theDAO.getUser(expected.getId());

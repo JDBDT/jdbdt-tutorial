@@ -178,7 +178,7 @@ public final class UserDAO {
     }
   } 
   
-  /** SQL for user queries by id. */
+  /** SQL to query all users. */
   private static final String 
   SQL_FOR_SELECT_ALL = "SELECT ID, LOGIN, NAME, PASSWORD, ROLE, CREATED FROM USERS";
   
@@ -197,6 +197,35 @@ public final class UserDAO {
                             rs.getString(3), 
                             rs.getString(4),
                             Role.valueOf(rs.getString(5)),
+                            rs.getDate(6)));
+        }
+        return list;
+      }
+    }
+  }
+  
+  /** SQL to query users by role. */
+  /** SQL to query all users. */
+  private static final String 
+  SQL_FOR_SELECT_BY_ROLE = "SELECT ID, LOGIN, NAME, PASSWORD, ROLE, CREATED FROM USERS WHERE ROLE=?";
+  
+  /**
+   * Get users by role.
+   * @param role Role type.
+   * @return List of user objects (empty if no user exists).
+   * @throws SQLException if a database error occurs.
+   */
+  public List<User> getUsers(Role role) throws SQLException {
+    ArrayList<User> list = new ArrayList<>();
+    try(PreparedStatement stmt = connection.prepareStatement(SQL_FOR_SELECT_BY_ROLE)) {
+      stmt.setString(1, role.toString());
+      try (ResultSet rs = stmt.executeQuery()) {
+        while (rs.next()) {
+          list.add(new User(rs.getInt(1),
+                            rs.getString(2), 
+                            rs.getString(3), 
+                            rs.getString(4),
+                            role,
                             rs.getDate(6)));
         }
         return list;
