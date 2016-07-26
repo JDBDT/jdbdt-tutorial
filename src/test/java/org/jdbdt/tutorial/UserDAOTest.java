@@ -222,7 +222,5 @@ public class UserDAOTest {
     assertEquals("User", expected, actual);
     assertUnchanged("No DB changes", theTable); 
   }
-  
-
-  
+ 
 }
