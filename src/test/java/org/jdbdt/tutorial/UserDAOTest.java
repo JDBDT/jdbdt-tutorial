@@ -73,15 +73,15 @@ public class UserDAOTest {
         .value("LOGIN", "root")
         .value("NAME", "Root user")
         .value("CREATED", FIXED_DATE)
-        .value("ROLE", ADMIN.toString())
+        .value("ROLE", ADMIN)
         .generate(1)
         .sequence("LOGIN", "alice", "bob", "charles")
         .sequence("NAME",  "Alice", "Bob", "Charles")
-        .value("ROLE", REGULAR.toString())
+        .value("ROLE", REGULAR)
         .generate(3)
         .sequence("LOGIN", i -> "guest" + i)
         .sequence("NAME",  i -> "Guest User " + i)
-        .value("ROLE", GUEST.toString())
+        .value("ROLE", GUEST)
         .generate(2)
         .data();
     
