@@ -10,7 +10,7 @@ public class HSQLDBTest extends UserDAOTest {
     JDBC_DRIVER_CLASS = "org.hsqldb.jdbcDriver";
   
   private static final String 
-    DATABASE_URL = "jdbc:hsqldb:file:jdbdtTutHSQLDB;shutdown=true";
+    DATABASE_URL = "jdbc:hsqldb:file:./db/hsqldb/jdbdtTutorial;shutdown=true";
   
   @BeforeClass
   public static void globalSetup() throws Throwable {

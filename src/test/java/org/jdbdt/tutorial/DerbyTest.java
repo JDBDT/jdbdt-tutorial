@@ -10,7 +10,7 @@ public class DerbyTest extends UserDAOTest {
     JDBC_DRIVER_CLASS = "org.apache.derby.jdbc.EmbeddedDriver";
   
   private static final String 
-    DATABASE_URL = "jdbc:derby:jdbdtTutDerby;create=true";
+    DATABASE_URL = "jdbc:derby:./db/derby/jdbdtTutorial;create=true";
   
   @BeforeClass
   public static void globalSetup() throws Throwable {

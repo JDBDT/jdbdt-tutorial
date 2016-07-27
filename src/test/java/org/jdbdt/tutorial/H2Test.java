@@ -10,7 +10,7 @@ public class H2Test extends UserDAOTest {
     JDBC_DRIVER_CLASS = "org.h2.Driver";
   
   private static final String 
-    DATABASE_URL = "jdbc:h2:./jdbdtTutH2";
+    DATABASE_URL = "jdbc:h2:./db/h2/jdbdtTutorial";
   
   @BeforeClass
   public static void globalSetup() throws Throwable {
