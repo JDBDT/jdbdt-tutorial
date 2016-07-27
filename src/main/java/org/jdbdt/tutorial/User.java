@@ -1,6 +1,7 @@
 package org.jdbdt.tutorial;
 
 import java.sql.Date;
+import java.util.Arrays;
 
 /**
  * POJO for user data.
@@ -73,8 +74,9 @@ public final class User implements Cloneable {
     this.created = date;
   }
   
-  public boolean equals(User u) {
+  public boolean sameAs(User u) {
     return id == u.id
+        && role == u.role
         && login.equals(u.login)
         && name.equals(u.name)
         && password.equals(u.password)
@@ -83,24 +85,20 @@ public final class User implements Cloneable {
   
   @Override 
   public boolean equals(Object o) {
-    return o == this || (o instanceof User && equals((User) o));
+    return o == this || (o instanceof User && sameAs((User) o));
   }
   
   @Override 
   public String toString() {
-    return String.format("id=%d login=%s name=%s password=%s created=%s",
-                         id, login, name, password, created);
-  }
-  
-  @Override
-  public User clone() {
-    try {
-      return (User) super.clone();
-    } 
-    catch (CloneNotSupportedException e) {
-      throw new Error(e);
-    }
+    return String.format("id=%d login=%s name=%s password=%s role=%s created=%s",
+                         id, login, name, password, role, created);
   }
 
-
+  @Override 
+  public int hashCode() {
+    return 
+      Arrays.hashCode(new Object[]{ 
+        id, role, login, name, password, role, created 
+      });
+  }
 }
