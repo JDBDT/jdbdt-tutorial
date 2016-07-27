@@ -10,7 +10,6 @@ import static org.junit.Assert.*;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 // JDBDT import
@@ -24,16 +23,8 @@ import org.jdbdt.Table;
 import static org.jdbdt.tutorial.Role.*;
 
 @SuppressWarnings("javadoc")
-public class UserDAOTest {
-  
-  // We'll make use of a H2 database 
-  private static final String 
-    JDBC_DRIVER_CLASS = "org.h2.Driver";
-  
-  // H2 database URL 
-  private static final String 
-    DATABASE_URL = "jdbc:h2:./jdbdtTutorialDB";
-  
+public abstract class UserDAOTest {
+    
   // JDBDT handle for the database 
   static DB theDB; 
   
@@ -50,11 +41,11 @@ public class UserDAOTest {
   // (we need this as a field so it can be referred to in a few test methods)
   static DataSet theInitialData;
   
-  @BeforeClass
-  public static void globalSetup() throws Throwable {
-    // Setup 
-    Class.forName(JDBC_DRIVER_CLASS);
-    theDB = database(DATABASE_URL);
+  // Global setup
+  protected static 
+  void globalSetup(String jdbcDriverClass, String databaseURL) throws Throwable {
+    Class.forName(jdbcDriverClass);
+    theDB = database(databaseURL);
     theDB.getConnection().setAutoCommit(false);
     theDAO = new UserDAO(theDB.getConnection());
     theDAO.createTable();
