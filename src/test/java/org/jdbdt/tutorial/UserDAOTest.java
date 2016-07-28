@@ -5,19 +5,24 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
+
 //JUnit imports
 import static org.junit.Assert.*;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
+
 // JDBDT import
 import static org.jdbdt.JDBDT.*; 
+
 import org.jdbdt.Conversion;
 import org.jdbdt.DB;
 import org.jdbdt.DataSet;
 import org.jdbdt.Table;
+
 
 // Static import for user roles
 import static org.jdbdt.tutorial.Role.*;
@@ -46,7 +51,6 @@ public abstract class UserDAOTest {
   void globalSetup(String jdbcDriverClass, String databaseURL) throws Throwable {
     Class.forName(jdbcDriverClass);
     theDB = database(databaseURL);
-    theDB.getConnection().setAutoCommit(false);
     theDAO = new UserDAO(theDB.getConnection());
     theDAO.createTable();
     theTable = table(theDB, "USERS")
@@ -77,6 +81,8 @@ public abstract class UserDAOTest {
         .data();
     
     populate(theInitialData);
+    theDB.getConnection().setAutoCommit(false);
+
   }
   
   @AfterClass 
