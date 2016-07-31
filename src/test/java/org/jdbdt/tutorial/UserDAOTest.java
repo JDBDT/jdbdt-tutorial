@@ -74,7 +74,7 @@ public abstract class UserDAOTest {
         .sequence("ID", 0)
         .sequence("PASSWORD", i -> "pass" + i)
         .value("LOGIN", "root")
-        .value("NAME", "Root user")
+        .nullValue("NAME")
         .value("CREATED", FIXED_DATE)
         .value("ROLE", ADMIN)
         .generate(1)
@@ -82,11 +82,12 @@ public abstract class UserDAOTest {
         .sequence("NAME",  "Alice", "Bob", "Charles")
         .value("ROLE", REGULAR)
         .generate(3)
-        .sequence("LOGIN", i -> "guest" + i)
-        .sequence("NAME",  i -> "Guest User " + i)
+        .sequence("LOGIN", i -> "guest" + i, 1)
+        .sequence("NAME",  i -> "Guest User " + i, 1)
         .value("ROLE", GUEST)
         .generate(2)
         .data();
+    // debug(theInitialData, System.err);
     
     // Populate database using the built data set
     populate(theInitialData);
@@ -99,6 +100,18 @@ public abstract class UserDAOTest {
   public static void globalTeardown() {
     truncate(theTable);
     teardown(theDB, true);
+  }
+  
+  @Before
+  public void saveState() {
+    // Set save point
+    save(theDB);
+  }
+  
+  @After
+  public void restoreState() {
+    // Restore state to save point
+    restore(theDB);
   }
   
   private static final Conversion<User> CONVERSION = 
@@ -115,20 +128,10 @@ public abstract class UserDAOTest {
     return data(theTable, CONVERSION).rows(users);
   }
   
-  @Before
-  public void saveState() {
-    // Set save point
-    save(theDB);
-  }
   
-  @After
-  public void restoreState() {
-    // Restore state to save point
-    restore(theDB);
-  }
   
   static User existingUser() {
-    return new User(0, "root", "Root user", "pass0", Role.ADMIN, FIXED_DATE);
+    return new User(0, "root", null, "pass0", Role.ADMIN, FIXED_DATE);
   }
   
   static User nonExistingUser() {
