@@ -49,10 +49,17 @@ public abstract class UserDAOTest {
   // Global setup
   protected static 
   void globalSetup(String jdbcDriverClass, String databaseURL) throws Throwable {
+    // Load JDBC driver class
     Class.forName(jdbcDriverClass);
+    
+    // Create database handle
     theDB = database(databaseURL);
+    
+    // Create DAO and in turn let it create USERS table 
     theDAO = new UserDAO(theDB.getConnection());
     theDAO.createTable();
+    
+    // Create table data source.
     theTable = table(theDB, "USERS")
               .columns("ID",
                        "LOGIN", 
@@ -60,7 +67,8 @@ public abstract class UserDAOTest {
                        "PASSWORD",
                        "ROLE",
                        "CREATED" );
-    // Initial data
+    
+    // Define data set for populating the database
     theInitialData
       =  builder(theTable)
         .sequence("ID", 0)
@@ -80,9 +88,11 @@ public abstract class UserDAOTest {
         .generate(2)
         .data();
     
+    // Populate database using the built data set
     populate(theInitialData);
+    
+    // Set auto-commit off (to allow for save-points)
     theDB.getConnection().setAutoCommit(false);
-
   }
   
   @AfterClass 
