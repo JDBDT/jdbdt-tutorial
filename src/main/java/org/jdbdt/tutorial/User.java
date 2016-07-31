@@ -75,12 +75,7 @@ public final class User implements Cloneable {
   }
   
   public boolean sameAs(User u) {
-    return id == u.id
-        && role == u.role
-        && login.equals(u.login)
-        && name.equals(u.name)
-        && password.equals(u.password)
-        && created.equals(u.created);
+    return Arrays.equals(toArray(), u.toArray());
   }
   
   @Override 
@@ -91,14 +86,16 @@ public final class User implements Cloneable {
   @Override 
   public String toString() {
     return String.format("id=%d login=%s name=%s password=%s role=%s created=%s",
-                         id, login, name, password, role, created);
+                         toArray());
   }
 
   @Override 
   public int hashCode() {
     return 
-      Arrays.hashCode(new Object[]{ 
-        id, role, login, name, password, role, created 
-      });
+      Arrays.hashCode(toArray());
+  }
+  
+  private Object[] toArray() {
+    return new Object[] { id, role, login, name, password, role, created };
   }
 }
