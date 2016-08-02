@@ -7,7 +7,7 @@ import java.util.Arrays;
  * POJO for user data.
  */
 @SuppressWarnings("javadoc")
-public final class User implements Cloneable {
+public final class User {
 
   private int id;
   private String login;
