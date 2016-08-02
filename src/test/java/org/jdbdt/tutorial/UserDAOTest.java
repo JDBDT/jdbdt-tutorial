@@ -128,9 +128,7 @@ public abstract class UserDAOTest {
     return data(theTable, CONVERSION).rows(users);
   }
   
-  
-  
-  static User existingUser() {
+  static User anExistingUser() {
     return new User(0, "root", null, "pass0", Role.ADMIN, FIXED_DATE);
   }
   
@@ -146,9 +144,17 @@ public abstract class UserDAOTest {
   }
   
   @Test
+  public void testNonExistingUserInsertionVariant() throws SQLException {
+    User u = nonExistingUser();
+    theDAO.insertUser(u);
+    DataSet expected = DataSet.join(theInitialData, userSet(u));
+    assertState("DB state", expected);
+  }
+  
+  @Test
   public void testExistingUserInsertion() {
     try {
-      User u = existingUser();
+      User u = anExistingUser();
       theDAO.insertUser(u);
       fail("Expected " + SQLException.class);
     }
@@ -159,7 +165,7 @@ public abstract class UserDAOTest {
   
   @Test
   public void testExistingUserDelete() throws SQLException {
-    User u = existingUser();
+    User u = anExistingUser();
     boolean deleted = theDAO.deleteUser(u);
     assertTrue("return value", deleted);
     assertDeleted("DB change", userSet(u));
@@ -176,19 +182,19 @@ public abstract class UserDAOTest {
   
   @Test 
   public void testDeleteAll() throws SQLException {
-    int n = theDAO.deleteAllUsers();
-    assertEquals("deleted users", n, theInitialData.size());
+    int count = theDAO.deleteAllUsers();
+    assertEquals("deleted users", count, theInitialData.size());
     assertEmpty("DB cleaned up", theTable);
   }
   
   @Test
   public void testExistingUserUpdate() throws SQLException {
-    User u = existingUser();
+    User u = anExistingUser();
     u.setPassword("new pass");
     u.setName("new name");
     boolean updated = theDAO.updateUser(u);
     assertTrue("return value", updated);
-    assertDelta("DB change", userSet(existingUser()), userSet(u));
+    assertDelta("DB change", userSet(anExistingUser()), userSet(u));
   }
   
   @Test
@@ -219,7 +225,7 @@ public abstract class UserDAOTest {
   
   @Test
   public void testGetUserById() throws SQLException {
-    User expected = existingUser();
+    User expected = anExistingUser();
     User actual = theDAO.getUser(expected.getId());
     assertEquals("User", expected, actual);
     assertUnchanged("No DB changes", theTable); 
@@ -227,7 +233,7 @@ public abstract class UserDAOTest {
   
   @Test
   public void testGetUserByLogin() throws SQLException {
-    User expected = existingUser();
+    User expected = anExistingUser();
     User actual = theDAO.getUser(expected.getLogin());
     assertEquals("User", expected, actual);
     assertUnchanged("No DB changes", theTable); 
