@@ -124,8 +124,8 @@ public abstract class UserDAOTest {
         u.getCreated()
       };
       
-  static DataSet userSet(User... users) {
-    return data(theTable, CONVERSION).rows(users);
+  static DataSet toDataSet(User u) {
+    return data(theTable, CONVERSION).row(u);
   }
   
   static User anExistingUser() {
@@ -140,14 +140,14 @@ public abstract class UserDAOTest {
   public void testNonExistingUserInsertion() throws SQLException {
     User u = nonExistingUser();
     theDAO.insertUser(u);
-    assertInserted("DB change", userSet(u));
+    assertInserted("DB change", toDataSet(u));
   }
   
   @Test
   public void testNonExistingUserInsertionVariant() throws SQLException {
     User u = nonExistingUser();
     theDAO.insertUser(u);
-    DataSet expected = DataSet.join(theInitialData, userSet(u));
+    DataSet expected = DataSet.join(theInitialData, toDataSet(u));
     assertState("DB state", expected);
   }
   
@@ -168,7 +168,7 @@ public abstract class UserDAOTest {
     User u = anExistingUser();
     boolean deleted = theDAO.deleteUser(u);
     assertTrue("return value", deleted);
-    assertDeleted("DB change", userSet(u));
+    assertDeleted("DB change", toDataSet(u));
   }
   
   
@@ -194,7 +194,7 @@ public abstract class UserDAOTest {
     u.setName("new name");
     boolean updated = theDAO.updateUser(u);
     assertTrue("return value", updated);
-    assertDelta("DB change", userSet(anExistingUser()), userSet(u));
+    assertDelta("DB change", toDataSet(anExistingUser()), toDataSet(u));
   }
   
   @Test
