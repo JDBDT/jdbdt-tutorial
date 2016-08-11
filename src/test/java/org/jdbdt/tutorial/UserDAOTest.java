@@ -167,24 +167,24 @@ public abstract class UserDAOTest {
   public void testExistingUserDelete() throws SQLException {
     User u = anExistingUser();
     boolean deleted = theDAO.deleteUser(u);
-    assertTrue("return value", deleted);
     assertDeleted("DB change", toDataSet(u));
+    assertTrue("return value", deleted);
   }
   
   
   @Test
   public void testNonExistingUserDelete() throws SQLException {
     User u = nonExistingUser();
-    boolean deleted = theDAO.deleteUser(u);
-    assertFalse("return value", deleted);
+    boolean deleted = theDAO.deleteUser(u);    
     assertUnchanged("No DB changes", theTable);
+    assertFalse("return value", deleted);
   }
   
   @Test 
   public void testDeleteAll() throws SQLException {
     int count = theDAO.deleteAllUsers();
-    assertEquals("deleted users", count, theInitialData.size());
     assertEmpty("DB cleaned up", theTable);
+    assertEquals("return value", count, theInitialData.size());
   }
   
   @Test
@@ -193,16 +193,16 @@ public abstract class UserDAOTest {
     u.setPassword("new pass");
     u.setName("new name");
     boolean updated = theDAO.updateUser(u);
-    assertTrue("return value", updated);
     assertDelta("DB change", toDataSet(anExistingUser()), toDataSet(u));
+    assertTrue("return value", updated);
   }
   
   @Test
   public void testNonExistingUserUpdate() throws SQLException {
     User u = nonExistingUser();
     boolean updated = theDAO.updateUser(u);
-    assertFalse("return value", updated);
     assertUnchanged("No DB changes", theTable);
+    assertFalse("return value", updated);
   }
   
   @Test
