@@ -2,6 +2,12 @@
 
 # JDBDT tutorial
 
-Example Maven project illustrating how to use [JDBDT](http://github.com/edrdo/jdbdt).
+Maven project for the [JDBDT tutorial](http://jdbdt.org/Tutorial.html).
 
-**__ WORK IN PROGRESS __**
+For more information visit JDBDT's web site: [jdbdt.org](http://jdbdt.org)
+
+# License
+
+[Eclipse Public License v 1.0](http://www.eclipse.org/legal/epl-v10.html).
+
+
