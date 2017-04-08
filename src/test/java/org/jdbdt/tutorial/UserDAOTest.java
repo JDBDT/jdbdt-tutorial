@@ -60,13 +60,14 @@ public abstract class UserDAOTest {
     theDAO.createTable();
     
     // Create table data source.
-    theTable = table(theDB, "USERS")
+    theTable = table("USERS")
               .columns("ID",
                        "LOGIN", 
                        "NAME", 
                        "PASSWORD",
                        "ROLE",
-                       "CREATED" );
+                       "CREATED" )
+              .build(theDB);
     
     // Define data set for populating the database
     theInitialData
