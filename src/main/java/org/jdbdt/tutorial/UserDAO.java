@@ -49,7 +49,7 @@ public final class UserDAO {
    * @return <code>true</code> iff table existed and was dropped.
    * @throws SQLException If a database error occurs,
    */
-  public  boolean dropTable() throws SQLException {
+  public boolean dropTable() throws SQLException {
     DatabaseMetaData dbmd = connection.getMetaData();
     ResultSet res = dbmd.getTables(null, null, "USERS", new String[] {"TABLE"});
     boolean exists = res.next();
