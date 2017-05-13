@@ -68,17 +68,13 @@ public final class UserDAO {
    * @throws SQLException if a database error occurs.
    * @see #dropTable()
    */
-  public void createTable() throws SQLException {
+  public void createTable() throws SQLException, IOException {
     dropTable();
-    DataInputStream in = new DataInputStream(getClass().getResourceAsStream(SQL_TABLE_SCRIPT));
-    try {
+    try(DataInputStream in = new DataInputStream(getClass().getResourceAsStream(SQL_TABLE_SCRIPT))) {
       byte[] fileContents = new byte[in.available()];
       in.readFully(fileContents);
       executePlainSQL(new String(fileContents));
     } 
-    catch (IOException e) {
-      throw new RuntimeException("Error reading SQL for table creation", e);
-    }
   }
 
   /** SQL for table insertion. */
