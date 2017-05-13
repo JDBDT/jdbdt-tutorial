@@ -7,7 +7,7 @@
   <url>http://jdbdt.org/</url>
   <groupId>org.jdbdt</groupId>
   <artifactId>jdbdt-tutorial</artifactId>
-  <version>0.10</version>
+  <version>0.11</version>
   <packaging>jar</packaging>
   <organization>
     <name>JDBDT</name>
@@ -53,7 +53,7 @@
     <dependency>
       <groupId>org.jdbdt</groupId>
       <artifactId>jdbdt</artifactId>
-      <version>0.10</version>
+      <version>0.11</version>
       <scope>test</scope>
     </dependency>
     <!-- JUnit -->
