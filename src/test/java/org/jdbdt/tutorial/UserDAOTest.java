@@ -233,10 +233,24 @@ public abstract class UserDAOTest {
   }
   
   @Test
+  public void testGetNonExistingUserById() throws SQLException {
+    User result = theDAO.getUser(nonExistingUser().getId());
+    assertNull("User", result);
+    assertUnchanged("No DB changes", theTable); 
+  }
+  
+  @Test
   public void testGetUserByLogin() throws SQLException {
     User expected = anExistingUser();
     User actual = theDAO.getUser(expected.getLogin());
     assertEquals("User", expected, actual);
+    assertUnchanged("No DB changes", theTable); 
+  }
+  
+  @Test
+  public void testGetNonExistingUserByLogin() throws SQLException {
+    User result = theDAO.getUser(nonExistingUser().getLogin());
+    assertNull("User", result);
     assertUnchanged("No DB changes", theTable); 
   }
  
