@@ -6,9 +6,4 @@
 
 This repository contains the Maven project for the [JDBDT tutorial](http://jdbdt.org/Tutorial.html).
 
-# License
-
-[Eclipse Public License v 1.0](http://www.eclipse.org/legal/epl-v10.html).
-
-Copyright [Eduardo R. B. Marques](http://www.dcc.fc.up.pt/~edrdo), 2016-2017
 
