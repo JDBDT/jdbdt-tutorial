@@ -14,11 +14,11 @@
     <url>http://jdbdt.org</url>
   </organization>
   <licenses>
-    <license>
-      <name>Eclipse Public License 1.0</name>
-      <url>http://www.eclipse.org/legal/epl-v10.html</url>
-      <distribution>repo</distribution>
-    </license>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
+			<distribution>repo</distribution>
+		</license>
   </licenses>
   <scm>
     <url>https://github.com/edrdo/jdbdt-tutorial</url>
