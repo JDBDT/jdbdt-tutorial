@@ -1,6 +1,6 @@
 [![JDBDT](https://raw.githubusercontent.com/edrdo/jdbdt/master/src/site/resources/images/jdbdt-logo.png)](http://jdbdt.org)
 
-[![Build status](https://api.travis-ci.org/edrdo/jdbdt-tutorial.png?branch=master)](https://travis-ci.org/edrdo/jdbdt-tutorial)
+[![Build status](https://api.travis-ci.org/JDBDT/jdbdt-tutorial.png?branch=master)](https://travis-ci.org/edrdo/jdbdt-tutorial)
 
 # JDBDT tutorial code
 
