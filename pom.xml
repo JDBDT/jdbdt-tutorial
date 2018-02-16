@@ -21,18 +21,18 @@
 		</license>
 	</licenses>
 	<scm>
-		<url>https://github.com/edrdo/jdbdt-tutorial</url>
-		<connection>scm:git:git@github.com:edrdo/jdbdt-tutorial.git</connection>
-		<developerConnection>scm:git:git@github.com:edrdo/jdbdt-tutorial.git</developerConnection>
+		<url>https://github.com/JDBDT/jdbdt-tutorial</url>
+		<connection>scm:git:git@github.com:JDBDT/jdbdt-tutorial.git</connection>
+		<developerConnection>scm:git:git@github.com:JDBDT/jdbdt-tutorial.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 	<issueManagement>
 		<system>github</system>
-		<url>https://github.com/edrdo/jdbdt-tutorial/issues/</url>
+		<url>https://github.com/JDBDT/jdbdt-tutorial/issues/</url>
 	</issueManagement>
 	<ciManagement>
 		<system>Travis</system>
-		<url>https://travis-ci.org/edrdo/jdbdt-tutorial/</url>
+		<url>https://travis-ci.org/JDBDT/jdbdt-tutorial/</url>
 	</ciManagement>
 	<developers>
 		<developer>
