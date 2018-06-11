@@ -7,7 +7,7 @@
 	<url>http://jdbdt.org/</url>
 	<groupId>org.jdbdt</groupId>
 	<artifactId>jdbdt-tutorial</artifactId>
-	<version>1.0.7</version>
+	<version>1.0.8</version>
 	<packaging>jar</packaging>
 	<organization>
 		<name>JDBDT</name>
@@ -53,7 +53,7 @@
 		<dependency>
 			<groupId>org.jdbdt</groupId>
 			<artifactId>jdbdt</artifactId>
-			<version>1.0.7</version>
+			<version>1.0.8</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- JUnit -->
@@ -67,7 +67,7 @@
 		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derby</artifactId>
-			<version>10.14.1.0</version>
+			<version>10.14.2.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -79,7 +79,7 @@
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
-			<version>2.4.0</version>
+			<version>2.4.1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
