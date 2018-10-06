@@ -112,7 +112,7 @@ public abstract class UserDAOTest {
         .value("ROLE", GUEST)
         .generate(2)
         .data();
-    dump(theInitialData, System.err);
+    // dump(theInitialData, System.err);
     
     // Populate database using the built data set
     populate(theInitialData);
